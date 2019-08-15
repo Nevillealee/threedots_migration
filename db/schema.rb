@@ -101,17 +101,16 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
   end
 
   create_table "products", force: :cascade do |t|
-    t.string "body_html"
+    t.string "title"
     t.string "handle"
+    t.string "body_html"
     t.datetime "created_at"
-    t.jsonb "images"
     t.jsonb "options"
     t.string "product_type"
     t.datetime "published_at"
     t.string "published_scope"
     t.string "tags"
     t.string "template_suffix"
-    t.string "title"
     t.string "metafields_global_title_tag"
     t.string "metafields_global_description_tag"
     t.datetime "updated_at"
