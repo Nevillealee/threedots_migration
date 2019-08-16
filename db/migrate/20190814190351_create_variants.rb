@@ -15,12 +15,10 @@ class CreateVariants < ActiveRecord::Migration[6.0]
       t.string :option1
       t.string :option2
       t.string :option3
-      t.jsonb :presentment_prices
       t.integer :position #read only
       t.string :price
       t.string :sku
       t.boolean :taxable
-      t.string :tax_code
       t.string :title
       t.datetime :updated_at
       t.integer :weight

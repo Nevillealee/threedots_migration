@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
     t.bigint "product_id", null: false
     t.datetime "created_at"
     t.integer "position"
-    t.integer "variant_ids", array: true
+    t.bigint "variant_ids", array: true
     t.string "src"
     t.integer "width"
     t.integer "height"
@@ -132,12 +132,10 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
     t.string "option1"
     t.string "option2"
     t.string "option3"
-    t.jsonb "presentment_prices"
     t.integer "position"
     t.string "price"
     t.string "sku"
     t.boolean "taxable"
-    t.string "tax_code"
     t.string "title"
     t.datetime "updated_at"
     t.integer "weight"
