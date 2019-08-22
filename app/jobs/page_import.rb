@@ -34,6 +34,6 @@ class PageImport
         end
       end
     end
-     Rescue.logger.info"done, rumtime #{Time.now - start} seconds"
+     Resque.logger.info"done, rumtime #{Time.now - start} seconds"
   end
 end

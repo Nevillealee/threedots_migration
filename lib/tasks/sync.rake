@@ -27,9 +27,16 @@ namespace :import do
   task 'variants' => :environment do
     Resque.enqueue(ProductImport)
   end
-  
+
   desc 'import threedots inventory'
   task 'inventory' => :environment do
     Resque.enqueue(InventoryImport)
+  end
+
+  desc 'import threedots metafields [products, collections, product_images, or variants]'
+  task 'metafield', [:type] do |t, args|
+    # args.type = argument passed in
+    # args.type.class = String
+    Resque.enqueue(MetafieldImport, *args)
   end
 end
