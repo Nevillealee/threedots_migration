@@ -30,7 +30,6 @@ class CustomCollectionImport
             title: shopify_cust_collection.title,
             updated_at: shopify_cust_collection.updated_at
           )
-          cust_collection = CustomCollection.find(shopify_cust_collection.id)
         rescue StandardError => e
           Resque.logger.error "CustomCollection(id: #{shopify_cust_collection.id}) table error: #{e}"
           next

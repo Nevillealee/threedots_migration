@@ -53,7 +53,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
   end
 
   create_table "inventory_items", force: :cascade do |t|
-    t.bigint "variant_id", null: false
     t.string "cost"
     t.string "country_code_of_origin"
     t.json "country_harmonized_system_codes"
@@ -64,7 +63,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
     t.boolean "tracked"
     t.datetime "updated_at"
     t.boolean "requires_shipping"
-    t.index ["variant_id"], name: "index_inventory_items_on_variant_id"
   end
 
   create_table "inventory_levels", force: :cascade do |t|
@@ -146,7 +144,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
   add_foreign_key "collects", "custom_collections"
   add_foreign_key "collects", "products"
   add_foreign_key "images", "products"
-  add_foreign_key "inventory_items", "variants"
   add_foreign_key "inventory_levels", "inventory_items"
   add_foreign_key "variants", "products"
 end
