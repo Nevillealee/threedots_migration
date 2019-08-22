@@ -1,5 +1,5 @@
 class CustomCollectionImport
-  @queue = :Lcustom_collection
+  @queue = :custom_collection
 
   def self.perform
   end

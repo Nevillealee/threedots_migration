@@ -8,8 +8,8 @@ namespace :import do
     Resque.enqueue(ProductImport)
   end
 
-  # desc 'import threedots active variants/inventory'
-  # task 'variants' => :environment do
-  #   Resque.enqueue(ProductImport)
-  # end
+  desc 'import threedots active variants/inventory'
+  task 'variants' => :environment do
+    Resque.enqueue(ProductImport)
+  end
 end
