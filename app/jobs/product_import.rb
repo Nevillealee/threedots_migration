@@ -3,8 +3,8 @@ class ProductImport
   extend Limiting
   def self.perform
     Resque.logger = Logger.new("#{Rails.root}/log/product_variant_image_import.log")
-     Resque.logger.level = Logger::DEBUG
-     Resque.logger.info 'PRODUCT IMPORT Job starts'
+    Resque.logger.level = Logger::DEBUG
+    Resque.logger.info 'PRODUCT IMPORT Job starts'
     #initialize class and run pull
     count = ShopifyAPI::Product.find(:count)
     Resque.logger.info "products to process: #{count.count}"

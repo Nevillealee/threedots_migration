@@ -30,3 +30,6 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+/redis-stable
+5432
+dump.rdb
