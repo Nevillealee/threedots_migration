@@ -40,3 +40,10 @@ namespace :import do
     Resque.enqueue(MetafieldImport, *args)
   end
 end
+
+namespace :export do
+  desc 'export to staging threedots products/variants'
+  task 'staging_products' => :environment do
+    Resque.enqueue(ProductExport)
+  end
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_212022) do
+ActiveRecord::Schema.define(version: 2019_08_23_171912) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,59 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
     t.string "vendor"
   end
 
+  create_table "staging_images", force: :cascade do |t|
+    t.bigint "staging_product_id", null: false
+    t.datetime "created_at"
+    t.integer "position"
+    t.bigint "variant_ids", array: true
+    t.string "src"
+    t.integer "width"
+    t.integer "height"
+    t.datetime "updated_at"
+    t.index ["staging_product_id"], name: "index_staging_images_on_staging_product_id"
+  end
+
+  create_table "staging_products", force: :cascade do |t|
+    t.string "title"
+    t.string "handle"
+    t.string "body_html"
+    t.datetime "created_at"
+    t.jsonb "options"
+    t.string "product_type"
+    t.datetime "published_at"
+    t.string "published_scope"
+    t.string "tags"
+    t.string "template_suffix"
+    t.datetime "updated_at"
+    t.string "vendor"
+  end
+
+  create_table "staging_variants", force: :cascade do |t|
+    t.bigint "staging_product_id", null: false
+    t.string "barcode"
+    t.string "compare_at_price"
+    t.datetime "created_at"
+    t.string "fulfillment_service"
+    t.integer "grams"
+    t.bigint "image_id"
+    t.bigint "inventory_item_id"
+    t.string "inventory_management"
+    t.string "inventory_policy"
+    t.integer "inventory_quantity"
+    t.string "option1"
+    t.string "option2"
+    t.string "option3"
+    t.integer "position"
+    t.string "price"
+    t.string "sku"
+    t.boolean "taxable"
+    t.string "title"
+    t.datetime "updated_at"
+    t.integer "weight"
+    t.string "weight_unit"
+    t.index ["staging_product_id"], name: "index_staging_variants_on_staging_product_id"
+  end
+
   create_table "variants", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.string "barcode"
@@ -145,5 +198,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_212022) do
   add_foreign_key "collects", "products"
   add_foreign_key "images", "products"
   add_foreign_key "inventory_levels", "inventory_items"
+  add_foreign_key "staging_images", "staging_products"
+  add_foreign_key "staging_variants", "staging_products"
   add_foreign_key "variants", "products"
 end
