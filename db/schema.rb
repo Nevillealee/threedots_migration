@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_23_171912) do
+ActiveRecord::Schema.define(version: 2019_08_23_230414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,19 @@ ActiveRecord::Schema.define(version: 2019_08_23_171912) do
     t.string "vendor"
   end
 
+  create_table "staging_custom_collections", force: :cascade do |t|
+    t.string "body_html"
+    t.string "handle"
+    t.jsonb "image"
+    t.boolean "published"
+    t.datetime "published_at"
+    t.string "published_scope"
+    t.string "sort_order"
+    t.string "template_suffix"
+    t.string "title"
+    t.datetime "updated_at"
+  end
+
   create_table "staging_images", force: :cascade do |t|
     t.bigint "staging_product_id", null: false
     t.datetime "created_at"
@@ -125,6 +138,27 @@ ActiveRecord::Schema.define(version: 2019_08_23_171912) do
     t.integer "height"
     t.datetime "updated_at"
     t.index ["staging_product_id"], name: "index_staging_images_on_staging_product_id"
+  end
+
+  create_table "staging_inventory_items", force: :cascade do |t|
+    t.string "cost"
+    t.string "country_code_of_origin"
+    t.json "country_harmonized_system_codes"
+    t.datetime "created_at"
+    t.bigint "harmonized_system_code"
+    t.string "province_code_of_origin"
+    t.string "sku"
+    t.boolean "tracked"
+    t.datetime "updated_at"
+    t.boolean "requires_shipping"
+  end
+
+  create_table "staging_inventory_levels", force: :cascade do |t|
+    t.bigint "staging_inventory_item_id", null: false
+    t.integer "available"
+    t.bigint "location_id"
+    t.datetime "updated_at"
+    t.index ["staging_inventory_item_id"], name: "index_staging_inventory_levels_on_staging_inventory_item_id"
   end
 
   create_table "staging_products", force: :cascade do |t|
@@ -199,6 +233,7 @@ ActiveRecord::Schema.define(version: 2019_08_23_171912) do
   add_foreign_key "images", "products"
   add_foreign_key "inventory_levels", "inventory_items"
   add_foreign_key "staging_images", "staging_products"
+  add_foreign_key "staging_inventory_levels", "staging_inventory_items"
   add_foreign_key "staging_variants", "staging_products"
   add_foreign_key "variants", "products"
 end

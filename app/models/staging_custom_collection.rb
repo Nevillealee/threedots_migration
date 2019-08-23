@@ -1,0 +1,2 @@
+class StagingCustomCollection < ApplicationRecord
+end
