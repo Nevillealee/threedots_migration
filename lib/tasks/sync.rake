@@ -23,10 +23,10 @@ namespace :import do
     Resque.enqueue(PageImport)
   end
 
-  desc 'import threedots active variants/inventory'
-  task 'variants' => :environment do
-    Resque.enqueue(ProductImport)
-  end
+  # desc 'import threedots active variants/inventory'
+  # task 'variants' => :environment do
+  #   Resque.enqueue(ProductImport)
+  # end
 
   desc 'import threedots inventory'
   task 'inventory' => :environment do

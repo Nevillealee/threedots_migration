@@ -1,6 +1,6 @@
+# exports product, variant, and image at once
 class ProductExport
   include HTTParty
-  extend Limiting
   @queue = :staging_product
   base_uri  ENV['STAGING_BASE_URI']
 
@@ -15,17 +15,21 @@ class ProductExport
       my_body = format_prod_body(active_prod)
       options = { body: my_body }
       res = post("#{base_uri}/#{ENV['API_VERSION']}/products.json", options)
+
       Resque.logger.info res.parsed_response
       call_limit = res.headers['x-shopify-shop-api-call-limit']
+
       if call_limit.to_i > 35
         Resque.logger.debug "CALL LIMIT REACHED: #{call_limit}, sleeping 15"
         sleep 15
       end
+
       if res.code == 201 || res.code == 200
         create_local(res.parsed_response['product'])
       else
         Resque.logger.warning "FAILURE!!!!! HTTP CODE: #{res.code}"
       end
+
       Resque.logger.info "HTTP RESPONSE CODE: #{res.code}"
       Resque.logger.info "------------> x-shopify-shop-api-call-limit: #{call_limit}\n\n"
     end
@@ -35,6 +39,8 @@ class ProductExport
   def self.format_prod_body(prod)
     my_variants = []
     my_options = []
+    my_images = []
+
     if prod.variants
       prod.variants.each do |vrnt|
         v_body = {
@@ -56,6 +62,7 @@ class ProductExport
         my_variants << v_body
       end
     end
+
     if prod.options
       option_array = JSON.parse(prod.options)
       option_array.each do |opt|
@@ -66,6 +73,16 @@ class ProductExport
         my_options << opt_hash
       end
     end
+
+    if prod.images
+      prod.images.each do |img|
+        img_body = {
+          src: img.src
+        }
+        my_images << img_body
+      end
+    end
+
     return {
       product: {
         title: prod.title,
@@ -73,6 +90,7 @@ class ProductExport
         body_html: prod.body_html,
         variants: my_variants,
         options: my_options,
+        images: my_images,
         product_type: prod.product_type,
         published_scope: prod.published_scope,
         tags: prod.tags,
@@ -99,6 +117,7 @@ class ProductExport
       vendor: stage_prod['vendor']
     )
     s_prod = StagingProduct.find(stage_prod['id'])
+
     if stage_prod['images'].size > 0
       stage_prod['images'].each do |stage_img|
       begin
@@ -114,7 +133,7 @@ class ProductExport
             updated_at: stage_img['updated_at']
           )
         else
-          s_prod.images.create(
+          StagingImage.create(
             id: stage_img['id'],
             created_at: stage_img['created_at'],
             position: stage_img['position'],
@@ -126,7 +145,7 @@ class ProductExport
           )
         end
       rescue StandardError => e
-        Resque.logger.error "StagingImage(id: #{stage_image['id']}) table error: #{e}"
+        Resque.logger.error "StagingImage(id: #{stage_img['id']}) table error: #{e}"
         next
       end #end of rescue block
       end
@@ -192,6 +211,7 @@ class ProductExport
         end #end of rescue block
       end
     end
+
     Resque.logger.info "Staging Product(variants/images)(#{stage_prod['title']}) saved to local DB!"
   end
 end
