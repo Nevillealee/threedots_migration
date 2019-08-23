@@ -1,7 +1,6 @@
 class CreateInventoryItems < ActiveRecord::Migration[6.0]
   def change
     create_table :inventory_items do |t|
-      t.references :variant, null: false, foreign_key: true
       t.string :cost
       t.string :country_code_of_origin
       t.json :country_harmonized_system_codes
