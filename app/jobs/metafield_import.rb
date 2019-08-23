@@ -6,6 +6,5 @@ class MetafieldImport
     Resque.logger = Logger.new("#{Rails.root}/log/metafield_#{type}_import.log")
     Resque.logger.level = Logger::DEBUG
     Resque.logger.info "#{type} Metafield IMPORT Job start"
-
   end
 end
