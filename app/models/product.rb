@@ -6,7 +6,7 @@ class Product < ApplicationRecord
   has_many :custom_collections, through: :collects
   has_many :metafields, as: :owner
 
-  def self.get_staging
+  def get_staging
     StagingProduct.find_by_handle(handle)
   end
 end
