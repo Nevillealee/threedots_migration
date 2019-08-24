@@ -42,8 +42,13 @@ namespace :import do
 end
 
 namespace :export do
-  desc 'export to staging threedots products/variants'
+  desc 'export to staging threedots products/variants/images'
   task 'staging_products' => :environment do
     Resque.enqueue(ProductExport)
+  end
+
+  desc 'export to staging, custom collections'
+  task 'custom_collections' => :environment do
+    Resque.enqueue(CustomCollectionExport)
   end
 end

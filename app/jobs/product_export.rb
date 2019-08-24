@@ -7,33 +7,36 @@ class ProductExport
   def self.perform
     start = Time.now
     Resque.logger = ::Logger.new("#{Rails.root}/log/product_variant_image_export.log")
-    # Resque.logger.level = ::Logger::DEBUG
     Resque.logger.info 'PRODUCT EXPORT Job starts'
     # collect all active products that arent in staging_table
     active_products = Product.joins("LEFT JOIN staging_products ON products.handle = staging_products.handle").where("staging_products.handle": nil)
-    active_products.each do |active_prod|
-      my_body = format_prod_body(active_prod)
-      options = { body: my_body }
-      res = post("#{base_uri}/#{ENV['API_VERSION']}/products.json", options)
+    if active_products.size > 0
+      active_products.each do |active_prod|
+        my_body = format_prod_body(active_prod)
+        options = { body: my_body }
+        res = post("#{base_uri}/#{ENV['API_VERSION']}/products.json", options)
 
-      Resque.logger.info res.parsed_response
-      call_limit = res.headers['x-shopify-shop-api-call-limit']
+        Resque.logger.info res.parsed_response
+        call_limit = res.headers['x-shopify-shop-api-call-limit']
 
-      if call_limit.to_i > 35
-        Resque.logger.debug "CALL LIMIT REACHED: #{call_limit}, sleeping 15"
-        sleep 15
+        if call_limit.to_i > 35
+          Resque.logger.debug "CALL LIMIT REACHED: #{call_limit}, sleeping 15"
+          sleep 15
+        end
+
+        if res.code == 201 || res.code == 200
+          create_local(res.parsed_response['product'])
+        else
+          Resque.logger.warn "FAILURE!!!!! HTTP CODE: #{res.code}"
+        end
+
+        Resque.logger.info "HTTP RESPONSE CODE: #{res.code}"
+        Resque.logger.info "------------> x-shopify-shop-api-call-limit: #{call_limit}\n\n"
       end
-
-      if res.code == 201 || res.code == 200
-        create_local(res.parsed_response['product'])
-      else
-        Resque.logger.warning "FAILURE!!!!! HTTP CODE: #{res.code}"
-      end
-
-      Resque.logger.info "HTTP RESPONSE CODE: #{res.code}"
-      Resque.logger.info "------------> x-shopify-shop-api-call-limit: #{call_limit}\n\n"
+    else
+      Resque.logger.info "No products were updated"
     end
-    Resque.logger.info "Done, Runtime: #{Time.now - start} seconds"
+    Resque.logger.info "Runtime: #{Time.now - start} seconds"
   end
 
   def self.format_prod_body(prod)
