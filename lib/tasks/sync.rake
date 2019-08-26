@@ -56,4 +56,9 @@ namespace :export do
   task 'collects' => :environment do
     Resque.enqueue(CollectExport)
   end
+
+  desc 'export to staging, inventory'
+  task 'inventory' => :environment do
+    Resque.enqueue(InventoryExport)
+  end
 end
