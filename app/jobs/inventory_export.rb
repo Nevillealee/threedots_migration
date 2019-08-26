@@ -10,7 +10,7 @@ class InventoryExport
     Resque.logger.info 'INVENTORY EXPORT Job starts'
     active_variants = Variant.joins("INNER JOIN staging_variants sv ON variants.sku = sv.sku
       WHERE sv.inventory_quantity <> variants.inventory_quantity");
-
+      Resque.logger.info "#{active_variants.size} Inventory Levels to update.."
     active_variants.each do |a_variant|
       begin
         staging_variant = a_variant.get_staging
@@ -34,10 +34,11 @@ class InventoryExport
         end
       rescue StandardError => e
         Resque.logger.error e
+        next
       end #end of rescue block
+      Resque.logger.info "Staging Inventory Level (#{staging_variant.id}) saved (in staging variant) to local DB!"
     end
-
-    Resque.logger.info "Staging Inventory(#{}) saved to local DB!"
+    Resque.logger.info"done, rumtime #{Time.now - start} seconds"
   end
 
   def self.format_var_body(stage_vrnt, new_qty)

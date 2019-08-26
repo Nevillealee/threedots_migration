@@ -61,4 +61,9 @@ namespace :export do
   task 'inventory' => :environment do
     Resque.enqueue(InventoryExport)
   end
+
+  desc 'export to staging, pages'
+  task 'pages' => :environment do
+    Resque.enqueue(PageExport)
+  end
 end
