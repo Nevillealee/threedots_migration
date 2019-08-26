@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_23_230414) do
+ActiveRecord::Schema.define(version: 2019_08_26_190641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -159,6 +159,18 @@ ActiveRecord::Schema.define(version: 2019_08_23_230414) do
     t.bigint "location_id"
     t.datetime "updated_at"
     t.index ["staging_inventory_item_id"], name: "index_staging_inventory_levels_on_staging_inventory_item_id"
+  end
+
+  create_table "staging_pages", force: :cascade do |t|
+    t.string "author"
+    t.string "body_html"
+    t.datetime "created_at"
+    t.string "handle"
+    t.datetime "published_at"
+    t.bigint "shop_id"
+    t.string "template_suffix"
+    t.string "title"
+    t.datetime "updated_at"
   end
 
   create_table "staging_products", force: :cascade do |t|

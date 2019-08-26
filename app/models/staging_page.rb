@@ -1,0 +1,2 @@
+class StagingPage < ApplicationRecord
+end

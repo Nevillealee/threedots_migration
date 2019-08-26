@@ -15,7 +15,7 @@ class InventoryExport
       begin
         staging_variant = a_variant.get_staging
         Resque.logger.debug "Active variant: #{a_variant.id} mapped to Staging Variant #{staging_variant.id}"
-        my_body = format_var_body(staging_variant, a_variant.inventory_quantity)
+        my_body = format_inv_item_body(staging_variant, a_variant.inventory_quantity)
         options = { body: my_body }
         res = post("#{base_uri}/#{ENV['API_VERSION']}/inventory_levels/set.json", options)
 
@@ -41,7 +41,7 @@ class InventoryExport
     Resque.logger.info"done, rumtime #{Time.now - start} seconds"
   end
 
-  def self.format_var_body(stage_vrnt, new_qty)
+  def self.format_inv_item_body(stage_vrnt, new_qty)
     return {
       location_id: ENV['STAGING_LOCATION_ID'],
       inventory_item_id: stage_vrnt.inventory_item_id,
